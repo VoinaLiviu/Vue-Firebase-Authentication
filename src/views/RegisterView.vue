@@ -1,7 +1,7 @@
 <template>
   <main>
     <section class="forms">
-        <form class="register">
+        <form class="register" @submit.prevent="register">
             <h2>Register</h2>
 
             <input type="email" 
