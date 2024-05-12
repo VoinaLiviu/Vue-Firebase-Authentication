@@ -4,6 +4,14 @@
         <form class="register" @submit.prevent="register">
             <h2>Register</h2>
 
+            <input type="text" 
+            placeholder="First name" 
+            v-model="register_form.fname"/>
+
+            <input type="text" 
+            placeholder="Last name" 
+            v-model="register_form.lname"/>
+
             <input type="email" 
             placeholder="Email address" 
             v-model="register_form.email"/>
@@ -11,6 +19,10 @@
             <input type="password" 
             placeholder="Password" 
             v-model="register_form.password"/>
+
+            <input type="password" 
+            placeholder="Confirm password" 
+            v-model="register_form.conf"/>
 
             <input type="submit" 
             value="Register" />

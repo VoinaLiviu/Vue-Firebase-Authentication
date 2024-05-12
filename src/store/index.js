@@ -1,11 +1,13 @@
 import { createStore } from 'vuex'
 import router from '../router'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth'
+
+import { doc, setDoc } from 'firebase/firestore'
 
 export default createStore({
   state: {
@@ -48,31 +50,43 @@ export default createStore({
     },
 
     async register({ commit }, details) {
-      const { email, password } = details
+      const { fname, lname, email, password, conf } = details
 
-      try {
-        await createUserWithEmailAndPassword(auth, email, password)
-      } catch (error) {
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            alert("Email already in use")
-            break
-          case 'auth/invalid-email':
-            alert("Invalid email")
-            break
-          case 'auth/operation-not-allowed':
-            alert("Operation not allowed")
-            break
-          case 'auth/weak-password':
-            alert("Weak password")
-            break
-          default:
-            alert("Something went wrong")
+      if (password === conf) {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password)
+        } catch (error) {
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              alert("Email already in use")
+              break
+            case 'auth/invalid-email':
+              alert("Invalid email")
+              break
+            case 'auth/operation-not-allowed':
+              alert("Operation not allowed")
+              break
+            case 'auth/weak-password':
+              alert("Weak password")
+              break
+            default:
+              alert("Something went wrong")
+          }
+          return
         }
+      } else {
+        alert("Passwords don't match")
         return
       }
 
+
       commit('SET_USER', auth.currentUser)
+      console.log(auth.currentUser.uid)
+
+      await setDoc(doc(db, 'userDetails', auth.currentUser.uid), {
+        fname: fname,
+        lname: lname
+      });
 
       router.push('/')
     },
